@@ -4,10 +4,9 @@
  * Created by tienld@vitalify.asia on 26/07/2022
  * Copyright (c) 2022 OMRON HEALTHCARE Co.,Ltd. All rights reserved.
  */
+import React, { useMemo } from "react";
 import { Progressbar } from "framework7-react";
-import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { useMemo } from "react";
 import "./Memory.scss";
 
 const Memory = ({ x }) => {
@@ -17,6 +16,7 @@ const Memory = ({ x }) => {
     completed: "#335A75",
     default: "#C3CACF",
   };
+
   /* Used to compare the value of the progressbar. */
   const COMPARE_STEPS = {
     COMPARE_1: 0,
@@ -25,6 +25,7 @@ const Memory = ({ x }) => {
     COMPARE_4: 6,
     COMPARE_5: 7,
   };
+
   /* Used to represent the percentage of the progressbar increasing gradually. */
   const PERCENTAGE_OF_PROGREESBAR = {
     STEP_1: 0.15,
@@ -36,141 +37,74 @@ const Memory = ({ x }) => {
     STEP_7: 11,
     STEP_8: 12.5,
   };
-  const [y, setY] = useState(0);
-  useMemo(() => {
-    // eslint-disable-next-line default-case
-    switch (x) {
-      case 0: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_1);
-        break;
-      }
-      case 1: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_2);
-        break;
-      }
-      case 2: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_3);
-        break;
-      }
-      case 3: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_4);
-        break;
-      }
-      case 4: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_5);
-        break;
-      }
-      case 5: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_6);
-        break;
-      }
-      case 6: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_7);
-        break;
-      }
-      case 7: {
-        setY(PERCENTAGE_OF_PROGREESBAR.STEP_8);
-        break;
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [x]);
-  /* Used to sum the progress bar steps. */
+
   const TOTAL_STEPS = 8;
-  // /* Used to calculate the percentage of the progressbar. */
-  const PERCENT = [100 * (TOTAL_STEPS / 100)] * y;
+  const REAL_X = useMemo(() => x + 1, [x]);
+  const PERCENT = useMemo(() => {
+    const realX = REAL_X;
+    const value = PERCENTAGE_OF_PROGREESBAR[`STEP_${realX}`];
+    const result = 100 * (TOTAL_STEPS / 100) * value;
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [REAL_X]);
+  const LIST_BREAKPOINTS = useMemo(() => Object.values(COMPARE_STEPS), []);
+  const renderBreakpoints = () => {
+    return LIST_BREAKPOINTS.map((_, index) => {
+      const isLast = index >= LIST_BREAKPOINTS.length - 2;
+      const isStep3 = index === LIST_BREAKPOINTS.length - 3;
+      if (isLast) {
+        return null;
+      } else {
+        const nextBreakPointValue = LIST_BREAKPOINTS[index + 1];
+        const currentBreakPointValue = LIST_BREAKPOINTS[index];
+        const isActive = x >= currentBreakPointValue;
+        const isComplete = !isStep3 && x >= nextBreakPointValue;
+        const realIndex = index + 1;
+
+        return (
+          <div className="memory_label_wrap">
+            <div
+              className="memory_label_wrap_bar"
+              style={{
+                background: isComplete
+                  ? COLORS.completed
+                  : isActive
+                  ? COLORS.active
+                  : COLORS.default,
+              }}
+            ></div>
+            <div
+              className="memory_label_wrap_title"
+              style={{
+                color: isComplete
+                  ? COLORS.completed
+                  : isActive
+                  ? COLORS.active
+                  : COLORS.default,
+              }}
+            >
+              Step {realIndex}
+            </div>
+          </div>
+        );
+      }
+    });
+  };
 
   return (
     <div className="memory">
       <div className="memory_label">
         {x < COMPARE_STEPS.COMPARE_5 ? (
-          <>
-            <div className="memory_label_wrap">
-              <div
-                className="memory_label_wrap_bar"
-                style={{
-                  background:
-                    x >= COMPARE_STEPS.COMPARE_1 && x < COMPARE_STEPS.COMPARE_2
-                      ? COLORS.active
-                      : COLORS.completed,
-                }}
-              ></div>
-              <div
-                className="memory_label_wrap_title"
-                style={{
-                  color:
-                    x >= COMPARE_STEPS.COMPARE_1 && x < COMPARE_STEPS.COMPARE_2
-                      ? COLORS.active
-                      : COLORS.completed,
-                }}
-              >
-                Step 1
-              </div>
-            </div>
-            <div className="memory_label_wrap">
-              <div
-                className="memory_label_wrap_bar"
-                style={{
-                  background:
-                    x >= COMPARE_STEPS.COMPARE_2 && x < COMPARE_STEPS.COMPARE_3
-                      ? COLORS.active
-                      : x < COMPARE_STEPS.COMPARE_2
-                      ? COLORS.default
-                      : COLORS.completed,
-                }}
-              ></div>
-              <div
-                className="memory_label_wrap_title"
-                style={{
-                  color:
-                    x >= COMPARE_STEPS.COMPARE_2 && x < COMPARE_STEPS.COMPARE_3
-                      ? COLORS.active
-                      : x < COMPARE_STEPS.COMPARE_2
-                      ? COLORS.default
-                      : COLORS.completed,
-                }}
-              >
-                Step 2
-              </div>
-            </div>
-            <div className="memory_label_wrap">
-              <div
-                className="memory_label_wrap_bar"
-                style={{
-                  background:
-                    x >= COMPARE_STEPS.COMPARE_3 && x <= COMPARE_STEPS.COMPARE_4
-                      ? COLORS.active
-                      : x < COMPARE_STEPS.COMPARE_3
-                      ? COLORS.default
-                      : COLORS.completed,
-                }}
-              ></div>
-              <div
-                className="memory_label_wrap_title"
-                style={{
-                  color:
-                    x >= COMPARE_STEPS.COMPARE_3 && x <= COMPARE_STEPS.COMPARE_4
-                      ? COLORS.active
-                      : x < COMPARE_STEPS.COMPARE_3
-                      ? COLORS.default
-                      : COLORS.completed,
-                }}
-              >
-                Step 3
-              </div>
-            </div>
-          </>
+          renderBreakpoints()
         ) : (
-          <>
-            <div
-              className="memory_label_wrap_complete"
-              style={{
-                color: COLORS.active,
-              }}
-            >
-              Step 4
-            </div>
-          </>
+          <div
+            className="memory_label_wrap_complete"
+            style={{
+              color: COLORS.active,
+            }}
+          >
+            Step 4
+          </div>
         )}
       </div>
       <div className="memory_progressbar">
