@@ -1,0 +1,71 @@
+.tutorial-dialog {
+  position: fixed;
+  width: 101%;
+  z-index: 10000;
+  right: 0;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & .swiper-slide-1 {
+    width: 100vw !important;
+    height: 100vh;
+  }
+
+  & .slide-item {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+  }
+
+  .swiper-horizontal > .swiper-pagination-bullets {
+    top: calc(100% - 102px) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16px;
+  }
+
+  .swiper-pagination-bullet {
+    background: #f2f2f2;
+  }
+  .swiper-pagination-bullet-active {
+    background: #ffffff;
+  }
+
+  .swiper-button-next,
+  .swiper-button-prev {
+    height: 16px;
+    top: calc(100% - 80px) !important;
+    z-index: 100;
+    &::after {
+      font-size: 16px;
+      color: #ffffff;
+    }
+  }
+  .swiper-button-next {
+    right: 5%;
+  }
+  .swiper-button-prev {
+    left: 5%;
+  }
+
+  &__button-text {
+    position: absolute;
+    width: 100%;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    bottom: 83px;
+
+    & span {
+      padding: 0 47px;
+      font-weight: 400;
+      font-size: 16px;
+    }
+  }
+}
