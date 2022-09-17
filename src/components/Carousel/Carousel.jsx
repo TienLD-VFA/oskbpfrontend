@@ -13,7 +13,7 @@ export const Carousel = () => {
 			slideNextClass={isHideNext ? styles.hideBtn : ""}
 			// eslint-disable-next-line react/jsx-no-comment-textnodes
 		>
-			// Slider Content
+			{/* // Slider Content */}
 		</Swiper>
 	);
 };
